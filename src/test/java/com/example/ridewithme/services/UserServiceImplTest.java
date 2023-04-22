@@ -1,10 +1,11 @@
 package com.example.ridewithme.services;
 
-import com.example.ridewithme.dto.UserResponse;
+import com.example.ridewithme.dto.response.UserResponse;
 import com.example.ridewithme.dto.request.UserRequest;
 
 import com.example.ridewithme.dto.request.UserUpdateDetailsRequest;
 import com.example.ridewithme.dto.response.UserUpdateDetailsResponse;
+import com.example.ridewithme.models.User;
 import com.example.ridewithme.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class UserServiceImplTest {
         userService.createUser(userRequest);
 
         UserUpdateDetailsRequest userUpdateDetailsRequest = new UserUpdateDetailsRequest();
-        userUpdateDetailsRequest.setId(2L);
+        userUpdateDetailsRequest.setId(1L);
         userUpdateDetailsRequest.setEmail("graetedsite@gmail.com");
         userUpdateDetailsRequest.setLastName("titi");
         userUpdateDetailsRequest.setFirstName("tope");
@@ -61,8 +62,51 @@ class UserServiceImplTest {
 
         UserUpdateDetailsResponse response=userService.userCanUpdateDetails(userUpdateDetailsRequest);
 
-        assertEquals()
+        assertEquals(response.getMessage(),"details successfully updated");
+        assertEquals(response.getEmail(),"graetedsite@gmail.com");
 
 
     }
+    @Test
+    void TestThatMoreThaOneUserCanBeCreated(){
+        UserRequest userRequest= new UserRequest();
+        userRequest.setFirstName("tola");
+        userRequest.setLastName("shola");
+        userRequest.setPassword("gratedel");
+        userRequest.setEmail("graetedsite@gmail.com");
+        userService.createUser(userRequest);
+
+        UserRequest userRequest2 = UserRequest.builder()
+//                .id(3L)
+                .email("lasers@gmail.com")
+                .lastName("yinka")
+                .firstName("funke")
+                .password("prinky234")
+                .build();
+        userService.createUser(userRequest2);
+
+
+       assertEquals(userRepository.count(),2);
+
+
+
+    }
+    @Test
+    void testThatAUserCanBeFoundById(){
+        UserRequest userRequest2 = UserRequest.builder()
+
+                .email("lasers@gmail.com")
+                .lastName("yinka")
+                .firstName("funke")
+                .password("prinky234")
+                .build();
+        userService.createUser(userRequest2);
+
+
+        User user =userService.getAUserById(1L);
+        assertEquals(user.getEmail(),"lasers@gmail.com");
+        assertEquals(user.getId(),1);
+    }
+
+
 }

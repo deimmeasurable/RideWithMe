@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,9 +22,12 @@ public class User {
     private String lastName;
 
 
+
     private String email;
 
 
     private String password;
+    private boolean active;
+   // private List<Role> role;
 
 }

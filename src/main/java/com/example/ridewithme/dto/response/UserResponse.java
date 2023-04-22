@@ -1,4 +1,4 @@
-package com.example.ridewithme.dto;
+package com.example.ridewithme.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
