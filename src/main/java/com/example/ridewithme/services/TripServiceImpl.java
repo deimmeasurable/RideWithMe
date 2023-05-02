@@ -1,8 +1,10 @@
 package com.example.ridewithme.services;
 
 import com.example.ridewithme.dto.request.CheckUserLocation;
+import com.example.ridewithme.dto.request.UserPayForTripRequest;
 import com.example.ridewithme.dto.request.UserTripRequest;
 import com.example.ridewithme.dto.response.CheckUserLocationResponse;
+import com.example.ridewithme.dto.response.UserPayForTripResponse;
 import com.example.ridewithme.dto.response.UserTripResponse;
 import com.example.ridewithme.exception.DriverNotFoundException;
 import com.example.ridewithme.exception.UserNotFoundException;
@@ -82,6 +84,24 @@ if(!userTripRequest.isTripStatus()) {
 
 
         return checkUserLocation;
+    }
+
+    @Override
+    public UserPayForTripResponse tripCanBePaid(UserPayForTripRequest userPayForTripRequest) {
+        User foundUser = userRepository.findUserByEmail(userPayForTripRequest.getUserEmail()).orElseThrow(()-> new UserNotFoundException("user not found"));
+        Driver foundDriver = driverRepository.findDriverByEmail(userPayForTripRequest.getDriverEmail()).orElseThrow(()-> new DriverNotFoundException("driver not found"));
+
+        tripRepository.findTripByEmail(userPayForTripRequest.getDriverEmail());
+
+        UserPayForTripRequest   request = new UserPayForTripRequest();
+        request.setDriverEmail(foundDriver.getEmail());
+        request.setUserEmail(foundUser.getEmail());
+        request.setTripFee(userPayForTripRequest.getTripFee());
+
+        UserPayForTripResponse  userResponse = new UserPayForTripResponse();
+        userResponse.setAmount(request.getTripFee());
+        userResponse.setMessage(foundDriver.getEmail() +  " trip fee paid");
+        return userResponse;
     }
 
 }

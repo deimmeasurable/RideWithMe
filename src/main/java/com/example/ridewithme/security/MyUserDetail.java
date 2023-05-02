@@ -18,13 +18,10 @@ public class MyUserDetail implements UserDetails {
     private  boolean active;
 
 
-    public MyUserDetail(User user  ){
+    public MyUserDetail(User user  ) {
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.active=user.isActive();
-        this.authorityList= Arrays.stream(user.getRoles().split("  , "))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        this.active = user.isActive();
     }
     private List<GrantedAuthority> authorityList;
     @Override

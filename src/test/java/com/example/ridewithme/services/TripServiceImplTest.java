@@ -1,5 +1,6 @@
 package com.example.ridewithme.services;
 
+import com.example.ridewithme.dto.response.UserPayForTripResponse;
 import com.example.ridewithme.dto.request.*;
 
 import com.example.ridewithme.dto.response.CheckUserLocationResponse;
@@ -8,17 +9,12 @@ import com.example.ridewithme.exception.UserTripException;
 import com.example.ridewithme.repository.DriverRepository;
 import com.example.ridewithme.repository.TripRepository;
 import com.example.ridewithme.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContextAnnotationUtils;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 
@@ -141,6 +137,46 @@ class TripServiceImplTest {
 
         assertEquals(location.getLocation(),"folaAgoro rd,shomolu,lagos");
         assertEquals(location.getDriverEmail(),"tolurate@gmail.com");
+    }
+    @Test
+    void testThatTransportFeeCanBePay(){
+        UserRequest userRequest=new UserRequest();
+        userRequest.setFirstName("tola");
+        userRequest.setLastName("shola");
+        userRequest.setPassword("gratedel");
+        userRequest.setEmail("graetedsite@gmail.com");
+        userService.createUser(userRequest);
+
+        UserTripRequest userTripRequest =new UserTripRequest();
+        userTripRequest.setEmail("graetedsite@gmail.com");
+        userTripRequest.setLocation("folaAgoro rd,shomolu,lagos");
+        userTripRequest.setDestination("olubunnmi street, onipanu");
+        userTripRequest.setTripStatus(true);
+
+
+
+        tripService.searchForlocation(userTripRequest);
+
+        DriverRequest request=new DriverRequest();
+        request.setId(1L);
+        request.setPassword("drv345!");
+        request.setEmail("tolurate@gmail.com");
+        request.setFirstName("seyi");
+        request.setLastName("olwuatolu");
+        request.setPhoneNumber("08156478934");
+        driverService.createADriver(request);
+
+        UserPayForTripRequest   userPayForTripRequest   =new UserPayForTripRequest();
+        userPayForTripRequest.setUserEmail(userRequest.getEmail());
+        userPayForTripRequest.setDriverEmail(request.getEmail());
+        userPayForTripRequest.setTripFee(2000);
+
+        UserPayForTripResponse response =   tripService.tripCanBePaid(userPayForTripRequest);
+
+        assertEquals(response.getAmount(),2000);
+        assertEquals(response.getMessage(),"tolurate@gmail.com trip fee paid");
+
+
     }
 
 }
