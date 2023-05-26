@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 @Service
-
-
 public class TripServiceImpl implements TripService {
 
 
