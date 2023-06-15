@@ -9,6 +9,7 @@ import com.example.ridewithme.exception.UserTripException;
 import com.example.ridewithme.repository.DriverRepository;
 import com.example.ridewithme.repository.TripRepository;
 import com.example.ridewithme.repository.UserRepository;
+import org.apache.coyote.Request;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -179,7 +181,51 @@ class TripServiceImplTest {
 
     }
     @Test
-    void testThatTwentyFivePercentPayForTripRequestCommission(){
+    void testThatTwentyFivePercentPayForTripRequestCommission() {
+
+        UserRequest  userRequest = new UserRequest();
+        userRequest.setFirstName("tola");
+        userRequest.setLastName("shola");
+        userRequest.setPassword("gratedel");
+        userRequest.setEmail("graetedsite@gmail.com");
+        userService.createUser(userRequest);
+
+        UserTripRequest userTripRequest = new UserTripRequest();
+        userTripRequest.setEmail("graetedsite@gmail.com");
+        userTripRequest.setLocation("folaAgoro rd,shomolu,lagos");
+        userTripRequest.setDestination("olubunnmi street, onipanu");
+        userTripRequest.setTripStatus(true);
+
+        DriverRequest request = new DriverRequest();
+        request.setId(1L);
+        request.setPassword("drv345!");
+        request.setEmail("tolurate@gmail.com");
+        request.setFirstName("seyi");
+        request.setLastName("olwuatolu");
+        request.setPhoneNumber("08156478934");
+        driverService.createADriver(request);
+
+        UserPayForTripRequest userPayForTripRequest = new UserPayForTripRequest();
+
+        userPayForTripRequest.setUserEmail(userRequest.getEmail());
+        userPayForTripRequest.setDriverEmail(request.getEmail());
+        userPayForTripRequest.setTripFee(2000);
+
+
+        CommissionAgentRequest  commissionAgentRequest  = new CommissionAgentRequest();
+        commissionAgentRequest.setCommissionAmount(0.25);
+        commissionAgentRequest.setDriverEmail(request.getEmail());
+        commissionAgentRequest.setUserEmail(userRequest.getEmail());
+        CommissionAgentResponse commissionAgentResponse=tripService.commissionPaidByDriver(userPayForTripRequest,commissionAgentRequest);
+
+
+
+
+        assertEquals(commissionAgentResponse.getCommissionAmount(),500.0);
+        assertEquals(commissionAgentResponse.getEmail(),commissionAgentRequest.getDriverEmail());
+
+
+
 
     }
 

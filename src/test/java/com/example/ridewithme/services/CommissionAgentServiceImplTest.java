@@ -13,6 +13,5 @@ class CommissionAgentServiceImplTest {
         commissionAgentService=new CommissionAgentServiceImpl();
 
     }
-    @Test
 
 }
